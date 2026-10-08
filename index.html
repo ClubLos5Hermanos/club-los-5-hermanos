@@ -9,40 +9,73 @@ body{font-family:Arial,sans-serif;background:#111;color:#fff;margin:0;padding:20
 .card{max-width:520px;margin:auto;background:#1d1d1d;border-radius:18px;padding:24px;box-shadow:0 8px 30px #0008}
 h1{text-align:center;margin-top:0} .sub{text-align:center;color:#ddd}
 label{display:block;margin-top:16px;font-weight:700} input,button{width:100%;box-sizing:border-box;padding:13px;border-radius:10px;border:1px solid #555;margin-top:7px;font-size:16px}
-input{background:#292929;color:#fff} button{background:#fff;color:#111;font-weight:700;border:0;margin-top:20px}
+input{background:#292929;color:#fff} button{background:#fff;color:#111;font-weight:700;border:0;margin-top:20px;cursor:pointer}
+button:disabled{opacity:0.6;cursor:not-allowed}
 .note{font-size:13px;color:#bbb;margin-top:16px;line-height:1.4}
 .success{display:none;text-align:center}.success h2{font-size:25px}
+.checkbox-label{display:flex;align-items:center;gap:10px;margin-top:18px;font-weight:normal}
+.checkbox-label input{width:auto;margin:0}
 </style>
 </head>
 <body>
 <div class="card">
-<div id="form">
-<h1>🍕 CLUB 5 HERMANOS</h1>
-<p class="sub">Registrate gratis y empezá a sumar compras.</p>
-<label>Nombre y apellido *</label><input id="name" required>
-<label>WhatsApp *</label><input id="phone" inputmode="tel" required>
-<label>Fecha de nacimiento (opcional)</label><input id="birth" type="date">
-<label><input id="promo" type="checkbox" style="width:auto"> Quiero recibir promociones y beneficios por WhatsApp</label>
-<button onclick="register()">REGISTRARME</button>
-<p class="note">Cada compra de $10.000 o más cuenta como 1 compra. Premios: 5 compras = 2 empanadas · 10 = pizza muzzarella · 15 = 4 empanadas · 20 = pizza especial.</p>
+  <div id="form">
+    <h1>🍕 CLUB 5 HERMANOS</h1>
+    <p class="sub">Registrate gratis y empezá a sumar compras.</p>
+    
+    <label>Nombre y apellido *</label>
+    <input id="name" required placeholder="Ej: Juan Pérez">
+    
+    <label>WhatsApp *</label>
+    <input id="phone" inputmode="tel" required placeholder="Ej: 11 2345-6789">
+    
+    <label>Fecha de nacimiento (opcional)</label>
+    <input id="birth" type="date">
+    
+    <label class="checkbox-label">
+      <input id="promo" type="checkbox">
+      Quiero recibir promociones y beneficios por WhatsApp
+    </label>
+    
+    <button id="btn" onclick="register()">REGISTRARME</button>
+    
+    <p class="note">Cada compra de $10.000 o más cuenta como 1 compra. Premios: 5 compras = 2 empanadas · 10 = pizza muzzarella · 15 = 4 empanadas · 20 = pizza especial.</p>
+  </div>
+  
+  <div id="ok" class="success">
+    <h2>🎉 ¡Bienvenido al Club 5 Hermanos!</h2>
+    <p id="msg"></p>
+    <p>Ya recibimos tu registro. Guardá nuestro WhatsApp para identificarte en tus próximas compras.</p>
+  </div>
 </div>
-<div id="ok" class="success">
-<h2>🎉 ¡Bienvenido al Club 5 Hermanos!</h2>
-<p id="msg"></p>
-<p>Guardá este número de WhatsApp para identificarte en tus próximas compras.</p>
-</div>
-</div>
+
 <script>
-function register(){
- const name=document.getElementById('name').value.trim();
- const phone=document.getElementById('phone').value.trim();
- if(!name||!phone){alert('Completá nombre y WhatsApp.');return;}
- const key='club5_'+phone.replace(/\D/g,'');
- const data={name,phone,birth:document.getElementById('birth').value,promo:document.getElementById('promo').checked,compras:0,created:new Date().toISOString()};
- localStorage.setItem(key,JSON.stringify(data));
- document.getElementById('form').style.display='none';
- document.getElementById('ok').style.display='block';
- document.getElementById('msg').textContent='Registro completado para '+name+'.';
+function register() {
+  const name = document.getElementById('name').value.trim();
+  const phone = document.getElementById('phone').value.trim();
+  const birth = document.getElementById('birth').value;
+  const promo = document.getElementById('promo').checked ? "Sí" : "No";
+
+  if (!name || !phone) {
+    alert('Completá nombre y WhatsApp.');
+    return;
+  }
+
+  const tuNumero = "5491156355038";
+
+  const mensaje = `🍕 *Nuevo registro - Club 5 Hermanos*%0A%0A` +
+                  `*Nombre:* ${name}%0A` +
+                  `*WhatsApp:* ${phone}%0A` +
+                  `*Fecha nacimiento:* ${birth || "No indicada"}%0A` +
+                  `*Quiere promociones:* ${promo}`;
+
+  // Abrimos WhatsApp con el mensaje listo
+  window.open(`https://wa.me/\( {tuNumero}?text= \){mensaje}`, "_blank");
+
+  // Mostramos el mensaje de éxito
+  document.getElementById('form').style.display = 'none';
+  document.getElementById('ok').style.display = 'block';
+  document.getElementById('msg').textContent = 'Registro enviado para ' + name + '.';
 }
 </script>
 </body>
